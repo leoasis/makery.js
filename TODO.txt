@@ -1,0 +1,3 @@
+- Add hook chaining with overriding.
+- Test named blueprints
+- Support for more than one parameter in constructor
