@@ -1,3 +1,6 @@
+// Makery.js v0.1
+// (c) 2012 Leonardo Andres Garcia Crespo
+// Distributed Under MIT License
 (function() {
 
   var root = this;
