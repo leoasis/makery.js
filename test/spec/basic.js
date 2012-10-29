@@ -7,7 +7,7 @@ describe("Basic usage", function() {
       };
     });
 
-    it("creates the object when blueprint has simple properties", function() {
+    it("creates the object with blueprint simple properties", function() {
       Makery.blueprint(this.Model, {
         prop1: 1,
         prop2: 2
@@ -19,7 +19,7 @@ describe("Basic usage", function() {
       expect(model.get('prop2')).toEqual(2);
     });
 
-    it("creates the object when blueprint has function properties", function() {
+    it("execs blueprint function properties and assigns them to the object", function() {
       Makery.blueprint(this.Model, {
         prop1: function() { return 1; },
         prop2: function() { return "Hello World!"; }
@@ -31,7 +31,7 @@ describe("Basic usage", function() {
       expect(model.get('prop2')).toEqual("Hello World!");
     });
 
-    it("creates the object when blueprint has function properties", function() {
+    it("execs afterCreation hook when provided", function() {
       Makery.blueprint(this.Model, {
         prop1: function() { return "Something"; },
         afterCreation: function(obj) { obj.set('prop1', "Something modified!"); }
@@ -62,46 +62,40 @@ describe("Basic usage", function() {
       expect(model.get('prop2')).toEqual("Modified too");
     });
 
-    it("overrides the properties with function ones", function() {
-      var model = this.Model.make({
-        prop1: function() { return "Modified"; },
-        prop2: function() { return "Modified too"; }
-      });
+    it("function properties are not executed", function() {
+      var overrides = {
+        prop1: function() { return "Modified"; }
+      };
+      var model = this.Model.make(overrides);
 
-      expect(model.get('prop1')).toEqual("Modified");
-      expect(model.get('prop2')).toEqual("Modified too");
-    });
-
-    it("execs the afterCreation hook when provided", function() {
-      var model = this.Model.make({
-        afterCreation: function(obj) {
-          obj.set('prop1', "Modified after creation");
-        }
-      });
-
-      expect(model.get('prop1')).toEqual("Modified after creation");
+      expect(model.get('prop1')).toEqual(overrides.prop1);
+      expect(model.get('prop2')).toEqual("Some other value");
     });
   });
 
-  describe("creating an object with afterCreation override", function() {
+  describe("named blueprints", function() {
     beforeEach(function() {
       this.Model = Backbone.Model.extend({});
+
       Makery.blueprint(this.Model, {
-        prop1: "Some value",
-        afterCreation: function(obj) {
-          obj.set('prop1', "Changed!!");
-        }
+        prop: "Prop"
+      });
+
+      Makery.blueprint(this.Model, "another", {
+        prop: "Another Prop"
       });
     });
 
-    it("execs new the afterCreation hook when provided", function() {
-      var model = this.Model.make({
-        afterCreation: function(obj) {
-          obj.set('prop1', "Overriden!");
-        }
-      });
+    it("creates the object with the default blueprint if no name specified", function() {
+      expect(this.Model.make().get('prop')).toEqual('Prop');
+    });
 
-      expect(model.get('prop1')).toEqual("Overriden!");
+    it("creates the object with the default blueprint if default is specified", function() {
+      expect(this.Model.make('default').get('prop')).toEqual('Prop');
+    });
+
+    it("creates the object with the blueprint identified by the specified name", function() {
+      expect(this.Model.make('another').get('prop')).toEqual('Another Prop');
     });
   });
 });

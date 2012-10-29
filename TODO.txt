@@ -1,9 +1,4 @@
-- Test named blueprints
 - Support for more than one parameter in constructor
-- Remove function property auto call in make, leave that only for
-  the blueprint (like in Machinist).
-- Add hook chaining with overriding. Don't know if this is cool or
-  we should just leave the hooks for the blueprints, anyway
-  afterCreation when using make can be done directly without the
-  hook. Perhaps we should remove the hook call in the make options
-  at all.
+- Add more helpers (which ones?)
+- Add npm package
+- Travis CI

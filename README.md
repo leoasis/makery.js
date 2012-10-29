@@ -93,6 +93,26 @@ obj.aProperty; // "The value of this property"
 obj.otherProperty; // "Another value"
 ```
 
+Multiple blueprints for the same constructor can be defined. An unnamed blueprint
+will be the default one, but you can name blueprints and specify that name when
+making objects to use them.
+
+```js
+Makery.blueprint(MyConstructor, {
+  aProperty: "This is the default blueprint"
+});
+
+Makery.blueprint(MyConstructor, "another blueprint", {
+  aProperty: "This is another blueprint"
+});
+
+var obj = MyConstructor.make();
+obj.aProperty; //"This is the default blueprint"
+
+obj = MyConstructor.make("another blueprint");
+obj.aProperty; //"This is another blueprint"
+```
+
 Changelog
 ---------
 
@@ -100,3 +120,4 @@ v0.1
 - Basic blueprints functionality
 - Support for afterCreation hook
 - Support for function properties
+- Named blueprints
