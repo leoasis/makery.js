@@ -6,15 +6,19 @@ Factory-style (via blueprints) object creation for tests. Inspired by Ruby Machi
 Makery is a library that allows you to create objects with default values (and
 possibly overriding those) via the definition of blueprints.
 
-The objects need to have a constructor that receives an options hash as
+Makery works really well for creating Backbone models, but that is
+not the only use case. Makery can be used to create any kind of objects from a
+constructor.
+Right now the objects need to have a constructor that receives an options hash as
 single parameter. This constraint is to be removed in future versions.
 
 How to install
 --------------
 
-This library has a single dependency that is Underscore [http://underscorejs.org/]. Simply put underscore script before this one.
+This library has [Underscore](http://underscorejs.org) as a single dependency. Simply put the underscore script before this one.
 
-Also this library should work in node. Still haven't tested it, so let me know if you find any issues. This will be supported in the future.
+Also this library should work in node. Still haven't tested it, so let me know if you find any issues. This will be supported in the future, with an npm package
+coming.
 
 How to use
 ----------
@@ -46,19 +50,47 @@ obj.aProperty; // "Default value for property"
 obj.someOtherProperty; // true
 ```
 
-You can use functions to build up the properties, both in the blueprint and in the overrides
+You can use functions to build up the properties in the blueprint. This is
+useful for creating new instances each time for a property.
 
 ```js
 Makery.blueprint(MyConstructor, {
-  aProperty: function() { return "Default value for property"; },
+  aProperty: function() { return [1, 2, 3]; },
   someOtherProperty: false
 });
 
-var obj = MyConstructor.make({
-  someOtherProperty: function() { return true; }
+var obj = MyConstructor.make();
+obj.aProperty; // [1, 2, 3]
+```
+
+Inside the function properties in the blueprint, you have access to helper functions, available directly though `this`. Currently only `seq` is supported, which will give you
+an incremental value each time, ideal for ids or unique properties.
+
+```js
+Makery.blueprint(MyConstructor, {
+  id: function() { return this.seq(); }
 });
-obj.aProperty; // "Default value for property"
-obj.someOtherProperty; // true
+
+var obj = MyConstructor.make();
+obj.id; // 1
+var anotherObj = MyConstructor.make();
+anotherObj.id; // 2
+```
+
+Also there is an `afterCreation` hook available in the blueprints, to do any
+kind of action with the just created object.
+
+```js
+Makery.blueprint(MyConstructor, {
+  aProperty: "The value of this property",
+  afterCreation: function(obj) {
+    obj.otherProperty = "Another value";
+  }
+});
+
+var obj = MyConstructor.make();
+obj.aProperty; // "The value of this property"
+obj.otherProperty; // "Another value"
 ```
 
 Changelog
