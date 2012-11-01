@@ -16,14 +16,14 @@
   var _ = root._;
   if (!_ && (typeof require !== 'undefined')) _ = require('underscore');
 
-  var sequence = 1,
-      helpers = {
-        seq: function() {
-          return sequence++;
+  var helpers = {
+        unique: function(value) {
+          return _.uniqueId(value);
         }
       };
 
-  function getHooks(options) {
+  function extractHooks(options) {
+    // No-op default hooks
     var hooks = {
       afterCreation: function() {}
     };
@@ -38,7 +38,7 @@
     return hooks;
   }
 
-  function addMakerFor(ctor, name, options) {
+  function addMakeMethodOn(ctor) {
     if (!_.isFunction(ctor.make)) {
       ctor.make = function(name, attrs) {
         if (arguments.length < 2) {
@@ -50,11 +50,29 @@
         return ctor.make[name](attrs);
       }
     }
+  }
 
-    var hooks = getHooks(options);
+  Makery.blueprint = function(ctor, name, options) {
+    options = arguments.length === 3 ? options : name;
+    name = arguments.length === 3 ? name : "default";
+
+    addMakeMethodOn(ctor);
+
+    var hooks = extractHooks(options);
 
     ctor.make[name] = function(attrs) {
       var ctorParams = {};
+
+      // If the blueprint is not the default one, and a default one is defined,
+      // use that blueprint's options as options for this one.
+      if (name !== "default" && _.isFunction(ctor.make["default"])) {
+        _.each(ctor.make["default"].options, function(value, key) {
+          ctorParams[key] = _.isFunction(value) ?
+            value :
+            function() { return value; };
+        });
+      }
+
       _.each(options, function(value, key) {
         ctorParams[key] = _.isFunction(value) ?
           value :
@@ -67,6 +85,9 @@
 
       // include helpers so they can be called in the function properties
       var ctorParamsWithHelpers = _.extend({}, ctorParams, helpers);
+
+      // iterate through ctorParams as we don't want to exec the helpers, but
+      // exec every property using the context of the object with helpers.
       _.each(ctorParams, function(value, prop) {
         ctorParams[prop] = ctorParamsWithHelpers[prop]();
       });
@@ -76,13 +97,11 @@
       hooks.afterCreation(obj);
       return obj;
     };
-  }
 
-  Makery.blueprint = function(ctor, name, options) {
-    options = arguments.length === 3 ? options : name;
-    name = arguments.length === 3 ? name : "default";
-
-    addMakerFor(ctor, name, options);
+    // Make default options accesible, in case a named blueprint is defined.
+    if (name === "default") {
+      ctor.make[name].options = options;
+    }
   };
 
 }).call(this);

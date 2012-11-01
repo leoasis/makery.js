@@ -78,7 +78,8 @@ describe("Basic usage", function() {
       this.Model = Backbone.Model.extend({});
 
       Makery.blueprint(this.Model, {
-        prop: "Prop"
+        prop: "Prop",
+        prop2: "The other prop"
       });
 
       Makery.blueprint(this.Model, "another", {
@@ -96,6 +97,10 @@ describe("Basic usage", function() {
 
     it("creates the object with the blueprint identified by the specified name", function() {
       expect(this.Model.make('another').get('prop')).toEqual('Another Prop');
+    });
+
+    it("named blueprints use the default blueprint also if defined", function() {
+      expect(this.Model.make('another').get('prop2')).toEqual('The other prop');
     });
   });
 });

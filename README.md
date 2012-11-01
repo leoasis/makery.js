@@ -63,18 +63,20 @@ var obj = MyConstructor.make();
 obj.aProperty; // [1, 2, 3]
 ```
 
-Inside the function properties in the blueprint, you have access to helper functions, available directly though `this`. Currently only `seq` is supported, which will give you
-an incremental value each time, ideal for ids or unique properties.
+Inside the function properties in the blueprint, you have access to helper functions, available directly though `this`. Available helpers:
+
+- `unique`: gives you an incremental value each time, ideal for ids or unique properties. Optionally pass a prefix, to create unique properties of the type of
+'prefixid'.
 
 ```js
 Makery.blueprint(MyConstructor, {
-  id: function() { return this.seq(); }
+  id: function() { return this.unique(); }
 });
 
 var obj = MyConstructor.make();
-obj.id; // 1
+obj.id; // 0
 var anotherObj = MyConstructor.make();
-anotherObj.id; // 2
+anotherObj.id; // 1
 ```
 
 Also there is an `afterCreation` hook available in the blueprints, to do any
@@ -95,11 +97,13 @@ obj.otherProperty; // "Another value"
 
 Multiple blueprints for the same constructor can be defined. An unnamed blueprint
 will be the default one, but you can name blueprints and specify that name when
-making objects to use them.
+making objects to use them. Named blueprints will also use the default blueprint
+ as a fallback for not defined properties.
 
 ```js
 Makery.blueprint(MyConstructor, {
-  aProperty: "This is the default blueprint"
+  aProperty: "This is the default blueprint",
+  anotherProperty: "Still from the default blueprint"
 });
 
 Makery.blueprint(MyConstructor, "another blueprint", {
@@ -108,13 +112,18 @@ Makery.blueprint(MyConstructor, "another blueprint", {
 
 var obj = MyConstructor.make();
 obj.aProperty; //"This is the default blueprint"
+obj.anotherProperty; //"Still from the default blueprint"
 
 obj = MyConstructor.make("another blueprint");
 obj.aProperty; //"This is another blueprint"
+obj.anotherProperty; //"Still from the default blueprint"
 ```
 
 Changelog
 ---------
+
+v0.2 (Upcoming)
+- Named blueprints fallback to default blueprint if defined
 
 v0.1
 - Basic blueprints functionality
