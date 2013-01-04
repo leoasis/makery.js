@@ -1,6 +1,5 @@
-- Support for more than one parameter in constructor
-- Make afterCreation hook work when both named and default blueprints
-- Add more helpers (which ones?)
 - Add npm package
 - Travis CI
+- Add more helpers (which ones?)
+- Make afterCreation hook work when both named and default blueprints
 - Add way to add custom helpers

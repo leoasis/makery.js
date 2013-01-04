@@ -178,7 +178,7 @@ obj.param2; //"some param2 value"
 Changelog
 ---------
 
-v0.2 (Upcoming)
+v0.2
 - Named blueprints fallback to default blueprint if defined
 - Multiple parameters
 
