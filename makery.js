@@ -80,6 +80,10 @@
     return param;
   }
 
+  // We need a custom creation of an instance because we cannot
+  // pass a dynamic amount of args into a constructor when calling them
+  // with "new", so we must first call it with a fake constructor
+  // with the same prototype and then apply the real one with the correct args.
   function createInstanceOf(ctor, args) {
     var tempCtor = function(){},
        inst, ret;

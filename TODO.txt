@@ -3,3 +3,4 @@
 - Add more helpers (which ones?)
 - Add npm package
 - Travis CI
+- Add way to add custom helpers

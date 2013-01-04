@@ -9,8 +9,6 @@ possibly overriding those) via the definition of blueprints.
 Makery works really well for creating Backbone models, but that is
 not the only use case. Makery can be used to create any kind of objects from a
 constructor.
-Right now the objects need to have a constructor that receives an options hash as
-single parameter. This constraint is to be removed in future versions.
 
 How to install
 --------------
@@ -22,6 +20,11 @@ coming.
 
 How to use
 ----------
+
+Makery has a short syntax for constructors that have a single options object
+literal as a parameter. This is a very common way to create "Models", "Views"
+and other entities in most frameworks out there.
+
 
 Define the blueprints for the constructor
 
@@ -119,11 +122,65 @@ obj.aProperty; //"This is another blueprint"
 obj.anotherProperty; //"Still from the default blueprint"
 ```
 
+Makery has a little more verbose way to define a blueprint, by passing a
+function as the last parameter of the definition. The return value of that
+function must be the parameter to use for the constructor.
+
+```js
+Makery.blueprint(MyConstructor, function() {
+  return {
+    aProperty: "Some value",
+    anotherProperty: "Another value"
+  };
+});
+
+var obj = MyConstructor.make();
+obj.aProperty; //"Some value"
+obj.anotherProperty; //"Another value"
+```
+
+You can use `this` inside the function to get access to the helpers provided.
+
+```js
+Makery.blueprint(MyConstructor, function() {
+  return {
+    id: this.unique(),
+    aProperty: "Some value",
+    anotherProperty: "Another value"
+  };
+});
+
+var obj = MyConstructor.make();
+obj.id; //1
+obj.aProperty; //"Some value"
+obj.anotherProperty; //"Another value"
+```
+
+With this "more verbose" way to define blueprints, you can work with constructors
+that have more than one parameter. To do this, just return an array with the
+parameters in the correct order for that constructor.
+
+```js
+function MyMultiParamConstructor(param1, param2) {
+  this.param1 = param1;
+  this.param2 = param2;
+}
+
+Makery.blueprint(MyMultiParamConstructor, function() {
+  return ["some param1 value", "some param2 value"];
+});
+
+var obj = MyMultiParamConstructor.make();
+obj.param1; //"some param1 value"
+obj.param2; //"some param2 value"
+```
+
 Changelog
 ---------
 
 v0.2 (Upcoming)
 - Named blueprints fallback to default blueprint if defined
+- Multiple parameters
 
 v0.1
 - Basic blueprints functionality
