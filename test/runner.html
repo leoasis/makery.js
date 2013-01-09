@@ -14,9 +14,19 @@
   <!-- include source files here... -->
   <script type="text/javascript" src="../makery.js"></script>
 
+  <script>
+  // Mock require fn and return corresponding modules
+  function require(path) {
+    return {
+      '../../makery': Makery,
+      'underscore': _
+    }[path];
+  }
+  </script>
+
   <!-- include spec files here... -->
-  <script type="text/javascript" src="spec/basic.js"></script>
-  <script type="text/javascript" src="spec/parameters.js"></script>
+  <script type="text/javascript" src="spec/basic.spec.js"></script>
+  <script type="text/javascript" src="spec/parameters.spec.js"></script>
 
   <script type="text/javascript">
     (function() {

@@ -10,13 +10,17 @@ Makery works really well for creating Backbone models, but that is
 not the only use case. Makery can be used to create any kind of objects from a
 constructor.
 
-How to install
+How to install (web)
 --------------
 
 This library has [Underscore](http://underscorejs.org) as a single dependency. Simply put the underscore script before this one.
 
-Also this library should work in node. Still haven't tested it, so let me know if you find any issues. This will be supported in the future, with an npm package
-coming.
+How to install (node)
+--------------
+
+```
+npm install makery
+```
 
 How to use
 ----------
@@ -178,11 +182,11 @@ obj.param2; //"some param2 value"
 Changelog
 ---------
 
-v0.2
+v0.2.0
 - Named blueprints fallback to default blueprint if defined
 - Multiple parameters
 
-v0.1
+v0.1.0
 - Basic blueprints functionality
 - Support for afterCreation hook
 - Support for function properties

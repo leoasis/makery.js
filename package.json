@@ -1,0 +1,19 @@
+{
+  "name": "makery",
+  "version": "0.2.0",
+  "description": "Factory-style (via blueprints) object creation for tests.",
+  "main": "makery.js",
+  "author": "Leonardo Andres Garcia Crespo",
+  "keywords": ["factory", "test", "spec", "machinist", "factory-girl"],
+  "repository" : {
+    "type": "git",
+    "url": "https://github.com/leoasis/makery.js.git"
+  },
+  "dependencies": {
+    "underscore": "1.4.3"
+  },
+  "devDependencies": {
+    "jasmine-node": ">= 1.0.28"
+  },
+  "engines": { "node": ">= 0.8.0" }
+}

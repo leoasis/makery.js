@@ -1,3 +1,6 @@
+var Makery = require('../../makery'),
+    _      = require('underscore');
+
 describe("Parameters", function() {
 
   describe("parameters wrapped in function", function() {
