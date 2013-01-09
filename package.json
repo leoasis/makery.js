@@ -15,5 +15,8 @@
   "devDependencies": {
     "jasmine-node": ">= 1.0.28"
   },
+  "scripts": {
+    "test": "node_modules/jasmine-node/bin/jasmine-node test/spec"
+  },
   "engines": { "node": ">= 0.8.0" }
 }
