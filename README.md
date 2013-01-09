@@ -1,6 +1,8 @@
 makery.js
 =========
 
+[![Build Status](https://travis-ci.org/leoasis/makery.js.png?branch=master)](https://travis-ci.org/leoasis/makery.js)
+
 Factory-style (via blueprints) object creation for tests. Inspired by Ruby Machinist.
 
 Makery is a library that allows you to create objects with default values (and
