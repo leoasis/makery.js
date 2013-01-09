@@ -1,11 +1,22 @@
+var Makery = require('../../makery');
+
 describe("Basic usage", function() {
-  describe("creating an object with blueprint defaults", function() {
-    beforeEach(function() {
-      this.Model = Backbone.Model.extend({});
-      this.makeModel = function() {
-        return this.Model.make();
+
+  beforeEach(function() {
+    this.Model = function(attributes) {
+      this.attributes = attributes;
+
+      this.get = function(attr) {
+        return this.attributes[attr];
       };
-    });
+
+      this.set = function(attr, value) {
+        this.attributes[attr] = value;
+      }
+    };
+  });
+
+  describe("creating an object with blueprint defaults", function() {
 
     it("creates the object with blueprint simple properties", function() {
       Makery.blueprint(this.Model, {
@@ -13,7 +24,7 @@ describe("Basic usage", function() {
         prop2: 2
       });
 
-      var model = this.makeModel();
+      var model = this.Model.make();
 
       expect(model.get('prop1')).toEqual(1);
       expect(model.get('prop2')).toEqual(2);
@@ -25,7 +36,7 @@ describe("Basic usage", function() {
         prop2: function() { return "Hello World!"; }
       });
 
-      var model = this.makeModel();
+      var model = this.Model.make();
 
       expect(model.get('prop1')).toEqual(1);
       expect(model.get('prop2')).toEqual("Hello World!");
@@ -37,7 +48,7 @@ describe("Basic usage", function() {
         afterCreation: function(obj) { obj.set('prop1', "Something modified!"); }
       });
 
-      var model = this.makeModel();
+      var model = this.Model.make();
 
       expect(model.get('prop1')).toEqual("Something modified!");
     });
@@ -45,7 +56,6 @@ describe("Basic usage", function() {
 
   describe("creating an object with blueprint overrides", function() {
     beforeEach(function() {
-      this.Model = Backbone.Model.extend({});
       Makery.blueprint(this.Model, {
         prop1: "Some value",
         prop2: function() { return "Some other value"; }
@@ -75,8 +85,6 @@ describe("Basic usage", function() {
 
   describe("named blueprints", function() {
     beforeEach(function() {
-      this.Model = Backbone.Model.extend({});
-
       Makery.blueprint(this.Model, {
         prop: "Prop",
         prop2: "The other prop"

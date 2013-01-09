@@ -1,4 +1,4 @@
-// Makery.js v0.2
+// Makery.js v0.2.0
 // (c) 2013 Leonardo Andres Garcia Crespo
 // Distributed Under MIT License
 (function() {
