@@ -1,4 +1,3 @@
-- Travis CI
 - Add more helpers (which ones?)
 - Make afterCreation hook work when both named and default blueprints
 - Add way to add custom helpers

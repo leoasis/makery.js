@@ -32,7 +32,17 @@ literal as a parameter. This is a very common way to create "Models", "Views"
 and other entities in most frameworks out there.
 
 
-Define the blueprints for the constructor
+Given a constructor function like this:
+
+```js
+function MyConstructor(options) {
+  this.id = options.id;
+  this.aProperty = options.aProperty;
+  this.someOtherProperty = options.someOtherProperty;
+}
+```
+
+Define the blueprint for the constructor
 
 ```js
 Makery.blueprint(MyConstructor, {
