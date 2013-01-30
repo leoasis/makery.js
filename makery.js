@@ -51,7 +51,7 @@
           params = _.tail(arguments);
         }
         return ctor.make[name].apply(ctor.make, params);
-      }
+      };
     }
   }
 
@@ -85,14 +85,28 @@
   // with "new", so we must first call it with a fake constructor
   // with the same prototype and then apply the real one with the correct args.
   function createInstanceOf(ctor, args) {
-    var tempCtor = function(){},
-       inst, ret;
+    var tempCtor = function() {
+      // This will return the instance or the explicit return of the ctor
+      // accordingly.
+      // Remember that if you return a primitive type, the constructor will
+      // still return the object instance.
+      return ctor.apply(this, args);
+    };
 
     tempCtor.prototype = ctor.prototype;
-    inst = new tempCtor;
+    return new tempCtor();
+  }
 
-    ret = ctor.apply(inst, args);
-    return Object(ret) === ret ? ret : inst;
+  function getDefaultOptions(ctor, name) {
+    // If the blueprint is not the default one, and a default one is defined,
+    // use that blueprint's options as options for this one.
+    var defaultOptions =
+      name !== "default" && _.isFunction(ctor.make["default"]) ?
+        ctor.make["default"].getOptions() :
+        {};
+    // Always wrap default options in array, for consistent use
+    if (!_.isArray(defaultOptions)) defaultOptions = [defaultOptions];
+    return defaultOptions;
   }
 
   Makery.blueprint = function(ctor, name, options) {
@@ -108,14 +122,13 @@
 
     ctor.make[name] = function() {
       var attrs = arguments,
-          defaultOptions = getDefaultOptions(),
+          defaultOptions = getDefaultOptions(ctor, name),
           options = getOptions(),
           hooks = extractHooks(options),
           ctorParams = [];
 
       // Multiple parameters in constructor
       if (usingFunction && _.isArray(options)) {
-        var attrs = attrs || [];
         _.each(options, function(option, index) {
           ctorParams.push(attrs[index] || option || defaultOptions[index]);
         });
@@ -135,18 +148,6 @@
       ctor.make[name].getOptions = _.isFunction(options) ?
         _.bind(options, helpers) :
         function() {return _.clone(options); };
-    }
-
-    function getDefaultOptions() {
-      // If the blueprint is not the default one, and a default one is defined,
-      // use that blueprint's options as options for this one.
-      var defaultOptions =
-        name !== "default" && _.isFunction(ctor.make["default"]) ?
-          ctor.make["default"].getOptions() :
-          {};
-      // Always wrap default options in array, for consistent use
-      if (!_.isArray(defaultOptions)) defaultOptions = [defaultOptions];
-      return defaultOptions;
     }
   };
 
